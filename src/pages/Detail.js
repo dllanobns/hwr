@@ -1,48 +1,42 @@
 import React from 'react';
 import ajax from 'superagent';
+import { Link } from 'react-router-dom';
 
 class Detail extends React.Component {
 
 	constructor(props) {
 		super();
 		this.state = {
+			mode: 'commits',
 			commits: [],
 			forks: [],
-			pulls: [],
-			commits_flag: true,
-			forks_flag: false,
-			pulls_flag: false
+			pulls: []
 		}
 	}
 
+	fetchFeed(type) {
+		const baseURL = 'https://api.github.com/repos/facebook';
+    ajax.get(`${baseURL}/${this.props.match.params.repo}/${type}`)
+        .end((error, response) => {
+            if (!error && response) {
+                this.setState({ [type]: response.body });
+            } else {
+                console.log(`Error fetching ${type}`, error);
+            }
+        }
+    );
+	}
+
 	componentWillMount() {
-	    ajax.get('https://api.github.com/repos/facebook/react/commits')
-	        .end((error, response) => {
-	            if (!error && response) {
-	                this.setState({ commits: response.body });
-	            } else {
-	                console.log('There was an error fetching from GitHub', error);
-	            }
-	        }
-	    );
-			ajax.get('https://api.github.com/repos/facebook/react/forks')
-	        .end((error, response) => {
-	            if (!error && response) {
-	                this.setState({ forks: response.body });
-	            } else {
-	                console.log('There was an error fetching from GitHub', error);
-	            }
-	        }
-	    );
-			ajax.get('https://api.github.com/repos/facebook/react/pulls')
-	        .end((error, response) => {
-	            if (!error && response) {
-	                this.setState({ pulls: response.body });
-	            } else {
-	                console.log('There was an error fetching from GitHub', error);
-	            }
-	        }
-	    );
+			this.fetchFeed('commits');
+			this.fetchFeed('forks');
+			this.fetchFeed('pulls');
+	}
+
+	showSection(section) {
+		this.setState({
+				mode: section
+		});
 	}
 
   render() {
@@ -50,11 +44,11 @@ class Detail extends React.Component {
         	<div>
 						<h3>What do you want to see?</h3>
 						<div className="ui buttons">
-						  <button className="ui button">Commits</button>
-						  <button className="ui button">Forks</button>
-						  <button className="ui button">Pulls</button>
+						  <button className="ui button" onClick={() => this.showSection('commits')}>Commits</button>
+						  <button className="ui button" onClick={() => this.showSection('forks')}>Forks</button>
+						  <button className="ui button" onClick={() => this.showSection('pulls')}>Pulls</button>
 						</div><br/><br/>
-						{this.state.commits_flag &&
+						{this.state.mode == 'commits' &&
 							<div>
 								<h5 className="ui top attached header">
 								  Commits history
@@ -74,7 +68,7 @@ class Detail extends React.Component {
 							</div>
 						}
 
-						{this.state.forks_flag &&
+						{this.state.mode == 'forks' &&
 							<div>
 								<h5 className="ui top attached header">
 								  Forks history
@@ -93,7 +87,7 @@ class Detail extends React.Component {
 							</div>
 						}
 
-						{this.state.pulls_flag &&
+						{this.state.mode == 'pulls' &&
 							<div>
 								<h5 className="ui top attached header">
 								  Pulls history
@@ -111,6 +105,13 @@ class Detail extends React.Component {
 								</div>
 							</div>
 						}
+						<br/>
+						<Link to="/">
+							<button className="ui labeled icon button">
+						    <i className="left chevron icon"></i>
+						    Back
+						  </button>
+						</Link>
         	</div>
 		);
   }

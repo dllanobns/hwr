@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Detail from './pages/Detail';
+import Routes from './routes';
 
 ReactDOM.render(
-    <Detail message="This is coming from props" />,
+    <Routes/>,
     document.getElementById('app')
 );
