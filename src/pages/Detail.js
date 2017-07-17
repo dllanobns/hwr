@@ -58,8 +58,8 @@ class Detail extends React.Component {
 				        	{
 						        	this.state.commits.map((commit, index) => (
 								        	<div className="item" key={index}>
-								        		<b>{commit.author ? commit.author.login : 'Anonymous'}</b>:
-								        		<a href={commit.html_url}>{commit.commit.message}</a>
+								        		<Link to={"/user/" + commit.author.login}><b>{commit.author ? commit.author.login : 'Anonymous'}</b></Link>:
+								        		<a href={commit.html_url}> {commit.commit.message}</a>
 								        	</div>
 								    	))
 									}

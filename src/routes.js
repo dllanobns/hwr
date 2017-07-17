@@ -13,7 +13,7 @@ const Routes = () => {
           <Route exact path="/" component={ App }/>
           <Route exact path="/" component={ List }/>
           <Route path="/detail/:repo" component={ Detail }/>
-          <Route path="/user" component={ User }/>
+          <Route path="/user/:username" component={ User }/>
         </div>
       </HashRouter>
     )
